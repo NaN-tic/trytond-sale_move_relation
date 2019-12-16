@@ -51,13 +51,14 @@ class Move(metaclass=PoolMeta):
         Line = Pool().get('sale.line')
 
         if hasattr(Line, 'manual_delivery_date'):
-            # TODO search shipping_date
-            return [
+            return ['OR',
                 ('origin.manual_delivery_date',) + tuple(clause[1:3])
-                    + ('sale.line',) + tuple(clause[3:])]
-        else:
-            # TODO search shipping_date
-            return []
+                    + ('sale.line',) + tuple(clause[3:]),
+                [
+                    ('planned_date',) + tuple(clause[1:]),
+                    ('origin.manual_delivery_date', '=', None, 'sale.line'),
+                    ]
+                ]
 
     @classmethod
     def search_warehouse_customer(cls, name, clause):
