@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data>
+        <record model="ir.ui.view" id="move_out_view_tree">
+            <field name="model">stock.move</field>
+            <field name="type">tree</field>
+            <field name="priority" eval="10"/>
+            <field name="name">move_tree</field>
+        </record>
+
+        <record model="ir.action.act_window" id="act_move_out_form">
+            <field name="name">Moves Out</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain" eval="['OR', ('to_location.type', '=', 'customer'), ('from_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="search_value"
+                eval="[('create_date', '>=', DateTime(hour=0, minute=0, second=0, microsecond=0, delta_years=-1))]"
+                pyson="1"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_move_out_form_domain_pending_overdue">
+            <field name="name">Overdue pending incoming</field>
+            <field name="sequence" eval="40"/>
+            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned']), ['OR', ('planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0, delta_days=1)), ('sale_planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0, delta_days=1))]]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_move_out_form"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_move_out_form_domain_pending">
+            <field name="name">Pending incoming</field>
+            <field name="sequence" eval="40"/>
+            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned'])]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_move_out_form"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_move_out_form_domain_all">
+            <field name="name">All</field>
+            <field name="sequence" eval="9999"/>
+            <field name="domain"></field>
+            <field name="act_window" ref="act_move_out_form"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_move_out_form_view1">
+            <field name="sequence" eval="1"/>
+            <field name="view" ref="move_out_view_tree"/>
+            <field name="act_window" ref="act_move_out_form"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_move_out_form_view2">
+            <field name="sequence" eval="2"/>
+            <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_move_out_form"/>
+        </record>
+
+        <menuitem parent="stock.menu_move_form" sequence="20" action="act_move_out_form" id="menu_move_out_form"/>
+        <record model="ir.ui.menu-res.group" id="menu_move_out_group_stock">
+            <field name="menu" ref="menu_move_out_form"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+    </data>
+    <data depends="sale_delivery_date">
+        <record model="ir.ui.view" id="move_out_stock_lot_view_tree">
+            <field name="model">stock.move</field>
+            <field name="inherit" ref="move_out_view_tree"/>
+            <field name="name">move_sale_delivery_date_tree</field>
+        </record>
+    </data>
+    <data depends="stock_lot">
+        <record model="ir.ui.view" id="move_in_stock_lot_view_tree">
+            <field name="model">stock.move</field>
+            <field name="inherit" ref="move_out_view_tree"/>
+            <field name="name">move_stock_lot_tree</field>
+        </record>
+    </data>
+    <data depends="stock_valued">
+        <record model="ir.ui.view" id="move_out_stock_valued_view_tree">
+            <field name="model">stock.move</field>
+            <field name="inherit" ref="move_out_view_tree"/>
+            <field name="name">move_stock_valued_tree</field>
+        </record>
+    </data>
+</tryton>

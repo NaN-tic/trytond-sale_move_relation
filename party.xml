@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!-- This file is part of Tryton.  The COPYRIGHT file at the top level of
+this repository contains the full copyright notices and license terms. -->
+<tryton>
+    <data>
+        <!-- party.party -->
+        <record model="ir.action.act_window" id="act_party_move_out_form2">
+            <field name="name">Moves Out</field>
+            <field name="res_model">stock.move</field>
+            <field name="domain" eval="[If(Eval('active_ids', []) == [Eval('active_id')], ('shipment_customer', '=', Eval('active_id')), ('shipment_customer', 'in', Eval('active_ids'))), ['OR', ('to_location.type', '=', 'customer'), ('from_location.type', '=', 'customer')]]" pyson="1"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_party_move_out_form_domain_pending_overdue">
+            <field name="name">Overdue pending incoming</field>
+            <field name="sequence" eval="40"/>
+            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned']), ['OR', ('planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0, delta_days=1)), ('sale_planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0, delta_days=1))]]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_party_move_out_form2"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_party_move_out_form_domain_pending">
+            <field name="name">Pending incoming</field>
+            <field name="sequence" eval="40"/>
+            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned'])]" pyson="1"/>
+            <field name="count" eval="True"/>
+            <field name="act_window" ref="act_party_move_out_form2"/>
+        </record>
+        <record model="ir.action.act_window.domain" id="act_party_move_out_form_domain_all">
+            <field name="name">All</field>
+            <field name="sequence" eval="9999"/>
+            <field name="domain"></field>
+            <field name="act_window" ref="act_party_move_out_form2"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_party_move_out_form_view1">
+            <field name="sequence" eval="1"/>
+            <field name="view" ref="move_out_view_tree"/>
+            <field name="act_window" ref="act_party_move_out_form2"/>
+        </record>
+        <record model="ir.action.act_window.view" id="act_party_move_out_form_view2">
+            <field name="sequence" eval="2"/>
+            <field name="view" ref="stock.move_view_form"/>
+            <field name="act_window" ref="act_party_move_out_form2"/>
+        </record>
+        <record model="ir.action.keyword" id="act_open_party_move_out_keyword1">
+            <field name="keyword">form_relate</field>
+            <field name="model">party.party,-1</field>
+            <field name="action" ref="act_party_move_out_form2"/>
+        </record>
+        <record model="ir.action-res.group" id="act_party_move_out_form2-group_stock">
+            <field name="action" ref="act_party_move_out_form2"/>
+            <field name="group" ref="stock.group_stock"/>
+        </record>
+    </data>
+</tryton>
