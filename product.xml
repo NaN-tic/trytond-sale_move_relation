@@ -12,14 +12,14 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window.domain" id="act_product_move_in_form_domain_pending_overdue">
             <field name="name">Overdue pending incoming</field>
             <field name="sequence" eval="40"/>
-            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned']), ['OR', ('planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0, delta_days=1)), ('sale_planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0, delta_days=1))]]" pyson="1"/>
+            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned']), ['OR', ('planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0)), ('sale_planned_date', '&lt;', DateTime(hour=0, minute=0,second=0, microsecond=0))]]" pyson="1"/>
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_product_move_in_form2"/>
         </record>
         <record model="ir.action.act_window.domain" id="act_product_move_in_form_domain_pending">
             <field name="name">Pending incoming</field>
             <field name="sequence" eval="40"/>
-            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned'])]" pyson="1"/>
+            <field name="domain" eval="[('state', 'in', ['draft', 'staging', 'assigned']), ['OR', ('planned_date', '>=', DateTime(hour=0, minute=0,second=0, microsecond=0)), ('sale_planned_date', '>=', DateTime(hour=0, minute=0,second=0, microsecond=0))]]" pyson="1"/>
             <field name="count" eval="True"/>
             <field name="act_window" ref="act_product_move_in_form2"/>
         </record>
