@@ -13,7 +13,7 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_move_out_form">
             <field name="name">Moves Out</field>
             <field name="res_model">stock.move</field>
-            <field name="domain" eval="['OR', ('to_location.type', '=', 'customer'), ('from_location.type', '=', 'customer')]" pyson="1"/>
+            <field name="domain" eval="['OR', ('to_location.type', 'in', ['customer', 'production']), ('from_location.type', '=', 'customer')]" pyson="1"/>
             <field name="search_value"
                 eval="[('create_date', '>=', DateTime(hour=0, minute=0, second=0, microsecond=0, delta_years=-1))]"
                 pyson="1"/>
