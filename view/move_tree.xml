@@ -7,8 +7,7 @@ this repository contains the full copyright notices and license terms. -->
     <field name="shipment" expand="1"/>
     <field name="production_input"/>
     <field name="product"/>
-    <field name="quantity" string="Move Out Quantity"/>
-    <field name="origin_quantity"/>
+    <field name="quantity"/>
     <field name="uom"/>
     <field name="planned_date"/>
     <field name="effective_date"/>

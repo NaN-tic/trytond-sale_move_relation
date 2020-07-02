@@ -125,9 +125,5 @@ msgid "Moves Out"
 msgstr "Moviments de sortida"
 
 msgctxt "view:stock.move:"
-msgid "Move Out Quantity"
-msgstr "Quantitat moviment sortida"
-
-msgctxt "view:stock.move:"
 msgid "Move Out State"
 msgstr "Estat moviment sortida"
