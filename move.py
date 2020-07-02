@@ -27,9 +27,6 @@ class Move(metaclass=PoolMeta):
             ('cancel', 'Canceled'),
             ], 'Move Inventori State'), 'get_origin_move_field',
         searcher='search_origin_move_field')
-    origin_quantity = fields.Function(fields.Float("Move Inventory Quantity",
-            digits=(16, Eval('unit_digits', 2))), 'get_origin_move_field',
-        searcher='search_origin_move_field')
 
     @classmethod
     def get_sale_relation(cls, moves, names):
@@ -95,22 +92,14 @@ class Move(metaclass=PoolMeta):
             ('sale.party',) + tuple(clause[1:]),
             ]
 
-    @classmethod
-    def get_origin_move_field(cls, moves, names):
-        result = {
-            'origin_state': {},
-            'origin_quantity': {},
-            }
-        for move in moves:
-            origins = cls.search([
-                    ('origin', '=', 'stock.move,' + str(move.id)),
-                    ])
-            origin = origins[0] if origins else None
-            result['origin_state'][move.id] = (origin.state
-                if origin else None)
-            result['origin_quantity'][move.id] = (origin.quantity
-                if origin else None)
-        return result
+    def get_origin_move_field(self, name):
+        pool = Pool()
+        Move = pool.get('stock.move')
+
+        origins = Move.search([
+                ('origin', '=', 'stock.move,' + str(self.id)),
+                ])
+        return origins[0].state if origins else None
 
     @classmethod
     def search_origin_move_field(cls, name, clause):
@@ -120,11 +109,7 @@ class Move(metaclass=PoolMeta):
         move = Move.__table__()
 
         column, operator, value = clause
-        res = {
-            'origin_state': 'state',
-            'origin_quantity': 'quantity',
-            }
-        column = Column(move, res[column])
+        column = Column(move, 'state')
         Operator = fields.SQL_OPERATORS[operator]
         _, move_type = Move.origin.sql_type()
         query = sql_table.join(move,
