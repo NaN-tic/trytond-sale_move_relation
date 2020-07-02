@@ -5,12 +5,16 @@ this repository contains the full copyright notices and license terms. -->
     <field name="shipment_customer"/>
     <field name="sale"/>
     <field name="shipment" expand="1"/>
+    <field name="production_input"/>
     <field name="product"/>
-    <field name="quantity"/>
+    <field name="quantity" string="Move Out Quantity"/>
+    <field name="origin_quantity"/>
     <field name="uom"/>
     <field name="planned_date"/>
     <field name="effective_date"/>
     <field name="warehouse_customer"/>
     <field name="unit_price"/>
-    <field name="state"/>
+    <field name="cost_price"/>
+    <field name="state" string="Move Out State"/>
+    <field name="origin_state"/>
 </tree>

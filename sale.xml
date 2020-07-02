@@ -7,7 +7,7 @@ this repository contains the full copyright notices and license terms. -->
         <record model="ir.action.act_window" id="act_sale_move_out_form2">
             <field name="name">Moves Out</field>
             <field name="res_model">stock.move</field>
-            <field name="domain" eval="[If(Eval('active_ids', []) == [Eval('active_id')], ('sale', '=', Eval('active_id')), ('sale', 'in', Eval('active_ids'))), ['OR', ('to_location.type', '=', 'customer'), ('from_location.type', '=', 'customer')]]" pyson="1"/>
+            <field name="domain" eval="[If(Eval('active_ids', []) == [Eval('active_id')], ('sale', '=', Eval('active_id')), ('sale', 'in', Eval('active_ids'))), ['OR', ('to_location.type', 'in', ['customer', 'production']), ('from_location.type', '=', 'customer')]]" pyson="1"/>
         </record>
         <record model="ir.action.act_window.domain" id="act_sale_move_out_form_domain_pending_overdue">
             <field name="name">Overdue pending incoming</field>
