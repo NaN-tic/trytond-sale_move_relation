@@ -123,3 +123,11 @@ msgstr "Movimentos de salida"
 msgctxt "model:ir.ui.menu,name:menu_move_out_form"
 msgid "Moves Out"
 msgstr "Movimentos de salida"
+
+msgctxt "view:stock.move:"
+msgid "Move Out Quantity"
+msgstr "Cantidad movimiento salida"
+
+msgctxt "view:stock.move:"
+msgid "Move Out State"
+msgstr "Estado movimiento salida"

@@ -2,6 +2,9 @@
 # copyright notices and license terms.
 from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
+from trytond.pyson import Eval
+from sql import Column, Cast
+from sql.operators import Concat
 
 __all__ = ['Move']
 
@@ -14,8 +17,19 @@ class Move(metaclass=PoolMeta):
     warehouse_customer = fields.Function(fields.Many2One('stock.location',
         'Warehouse', domain=[('type', '=', 'warehouse')]),
         'get_sale_relation', searcher='search_warehouse_customer')
-    shipment_customer = fields.Function(fields.Many2One('party.party', 'Customer'),
-        'get_sale_relation', searcher='search_shipment_customer')
+    shipment_customer = fields.Function(fields.Many2One('party.party',
+        'Customer'), 'get_sale_relation', searcher='search_shipment_customer')
+    origin_state = fields.Function(fields.Selection([
+            ('staging', 'Staging'),
+            ('draft', 'Draft'),
+            ('assigned', 'Assigned'),
+            ('done', 'Done'),
+            ('cancel', 'Canceled'),
+            ], 'Move Inventori State'), 'get_origin_move_field',
+        searcher='search_origin_move_field')
+    origin_quantity = fields.Function(fields.Float("Move Inventory Quantity",
+            digits=(16, Eval('unit_digits', 2))), 'get_origin_move_field',
+        searcher='search_origin_move_field')
 
     @classmethod
     def get_sale_relation(cls, moves, names):
@@ -80,3 +94,44 @@ class Move(metaclass=PoolMeta):
                 + tuple(clause[3:]),
             ('sale.party',) + tuple(clause[1:]),
             ]
+
+    @classmethod
+    def get_origin_move_field(cls, moves, names):
+        result = {
+            'origin_state': {},
+            'origin_quantity': {},
+            }
+        for move in moves:
+            origins = cls.search([
+                    ('origin', '=', 'stock.move,' + str(move.id)),
+                    ])
+            origin = origins[0] if origins else None
+            result['origin_state'][move.id] = (origin.state
+                if origin else None)
+            result['origin_quantity'][move.id] = (origin.quantity
+                if origin else None)
+        return result
+
+    @classmethod
+    def search_origin_move_field(cls, name, clause):
+        pool = Pool()
+        Move = pool.get('stock.move')
+        sql_table = cls.__table__()
+        move = Move.__table__()
+
+        column, operator, value = clause
+        res = {
+            'origin_state': 'state',
+            'origin_quantity': 'quantity',
+            }
+        column = Column(move, res[column])
+        Operator = fields.SQL_OPERATORS[operator]
+        _, move_type = Move.origin.sql_type()
+        query = sql_table.join(move,
+            condition=move.origin == Concat('stock.move,',
+                Cast(sql_table.id, move_type))).select(
+            sql_table.id,
+            where=move.origin.like('stock.move,%') &
+            Operator(column, value),
+            )
+        return [('id', 'in', query)]
