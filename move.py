@@ -24,7 +24,7 @@ class Move(metaclass=PoolMeta):
             ('draft', 'Draft'),
             ('assigned', 'Assigned'),
             ('done', 'Done'),
-            ('cancel', 'Canceled'),
+            ('cancelled', "Cancelled"),
             ], 'Move Inventori State'), 'get_origin_move_field',
         searcher='search_origin_move_field')
 
