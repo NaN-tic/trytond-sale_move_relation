@@ -2,11 +2,8 @@
 # copyright notices and license terms.
 from trytond.model import fields
 from trytond.pool import Pool, PoolMeta
-from trytond.pyson import Eval
 from sql import Column, Cast
 from sql.operators import Concat
-
-__all__ = ['Move']
 
 
 class Move(metaclass=PoolMeta):
